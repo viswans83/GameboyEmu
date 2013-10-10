@@ -228,7 +228,7 @@ public class Bin {
     public static void bit8(byte v, int n, Flags f) {
         f.clrn();
         f.seth();
-        f.wz((byte)((1 << n) & v) != 0);
+        f.wz((byte)((1 << n) & v) == 0);
     }
     
     public static byte set8(byte v, int n) {
