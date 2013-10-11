@@ -30,8 +30,8 @@ public class KeyHandler extends KeyAdapter {
         keyevents.put(KeyEvent.VK_DOWN   , JoypadController.Key.Down  );
         keyevents.put(KeyEvent.VK_Z      , JoypadController.Key.A     );
         keyevents.put(KeyEvent.VK_X      , JoypadController.Key.B     );
-        keyevents.put(KeyEvent.VK_ENTER  , JoypadController.Key.Select);
-        keyevents.put(KeyEvent.VK_SPACE  , JoypadController.Key.Start );
+        keyevents.put(KeyEvent.VK_ENTER  , JoypadController.Key.Start );
+        keyevents.put(KeyEvent.VK_SPACE  , JoypadController.Key.Select);
     }
 
     @Override

@@ -14,7 +14,7 @@ import com.sankar.gbemu.mem.map.MemoryMapped;
  *
  * @author minerva
  */
-public class JoypadController implements MemoryMapped, ClockTrigger {
+public class JoypadController implements MemoryMapped {
     
     private InterruptFlag iflag;
     private int mode = 0;
@@ -26,14 +26,11 @@ public class JoypadController implements MemoryMapped, ClockTrigger {
     private static final int ADDR = 0xFF00;
     private static final int WRITE_MASK = 0x30;
     
-    private static final String JOY_TICK = "JOY_TICK";
-    
     final Key[] MODE_KEYS = new Key[]{Key.Start, Key.Select, Key.B, Key.A};
     final Key[] DIR_KEYS = new Key[]{Key.Down, Key.Up, Key.Left, Key.Right};
     
-    public JoypadController(Clock clock, InterruptFlag iflag) {
+    public JoypadController(InterruptFlag iflag) {
         this.iflag = iflag;
-        clock.register(JOY_TICK,this);
     }
     
     @Override
@@ -77,20 +74,8 @@ public class JoypadController implements MemoryMapped, ClockTrigger {
     public void depress(Key key) {
         key.depress();
     }
-
-    @Override
-    public void doTicks(int ticks) {
-        boolean shouldInterruptAgain = false;
-        
-        for(Key k : Key.values()) {
-            k.doTicks(ticks);
-            if (k.checkRepeatAndAcknowledge()) shouldInterruptAgain = true;
-        }
-        
-        if (shouldInterruptAgain) iflag.requestInterrupt(Interrupt.Joypad);
-    }
             
-    public static enum Key implements ClockTrigger {
+    public static enum Key {
         Down(0x8),
         Up(0x4),
         Left(0x2),
@@ -109,51 +94,20 @@ public class JoypadController implements MemoryMapped, ClockTrigger {
             return mask;
         }
         
-        @Override
-        public void doTicks(int ticks) {
-            if (pressed) {
-                ticksElapsed += ticks;
-                if (ticksElapsed > maxTicks) {
-                    if (depressed) {
-                        pressed = false;
-                        depressed = false;
-                    } else {
-                        System.out.println("Repeated key");
-                        repeating = true;
-                    }
-                    ticksElapsed = 0;
-                }
-            }
-        }
-        
         private void press() {
-            ticksElapsed = 0;
             pressed = true;
         }
         
         private void depress() {
-            depressed = true;
+            pressed = false;
         }
         
         public boolean isPressed() {
             return pressed;
         }
         
-        public boolean checkRepeatAndAcknowledge() {
-            if (repeating) {
-                repeating = false;
-                return true;
-            } else {
-                return false;
-            }
-        }
-        
-        private boolean pressed, depressed;
-        private boolean repeating;
-        
+        private boolean pressed;
         private int mask;
-        private int ticksElapsed;
-        private final int maxTicks = 56;  // Assuming that a key should be pinned down for 56 clocks
     }
     
 }

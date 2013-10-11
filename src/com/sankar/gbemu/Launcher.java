@@ -18,7 +18,7 @@ public class Launcher {
     
     public static void main(String[] args) throws IOException {
         
-        final Cartridge cart = Cartridge.load("testroms/opus5.gb");
+        final Cartridge cart = Cartridge.load(args[0]);
         
         SwingUtilities.invokeLater(new Runnable() {
             @Override

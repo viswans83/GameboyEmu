@@ -33,7 +33,7 @@ public class GBPanel extends JPanel {
         final InterruptEnable ienable = new InterruptEnable();
         final Timer timer = new Timer(clk,iflag);
         final LCDController lcd = new LCDController(clk,iflag);
-        final JoypadController joy = new JoypadController(clk,iflag);
+        final JoypadController joy = new JoypadController(iflag);
         final SoundController sound = new SoundController();
         final SerialController serial = new SerialController();
         
