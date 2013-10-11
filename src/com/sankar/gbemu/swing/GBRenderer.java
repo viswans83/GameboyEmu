@@ -22,10 +22,10 @@ public class GBRenderer {
     private final Color[] colors = new Color[4];
     
     public GBRenderer() {
-        colors[0] = Color.white;
-        colors[1] = Color.lightGray;
-        colors[2] = Color.darkGray;
-        colors[3] = Color.black;
+        colors[0] = new Color(0x01ffa5);
+        colors[1] = new Color(0xccb072);
+        colors[2] = new Color(0x006642);
+        colors[3] = new Color(0x051c12);
     }
     
     public void updateScreenData(int[][] screenData) {

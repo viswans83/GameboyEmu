@@ -41,9 +41,9 @@ public class Bin {
     public static short add16woz(short a, short b, Flags f) {
         int va = (a & 0xffff);
         int vb = (b & 0xffff);
-        int va_l = (a & 0xff);
-        int vb_l = (b & 0xff);
-        f.wh(((va_l + vb_l) & 0x100) != 0);
+        int va_l = (a & 0xfff);
+        int vb_l = (b & 0xfff);
+        f.wh(((va_l + vb_l) & 0x1000) != 0);
         int r = va + vb;
         f.wc((r & 0x10000) != 0);
         f.clrn();
@@ -51,14 +51,14 @@ public class Bin {
     }
     
     //Always clear Z flag
-    public static short add8cz(short a, byte b, Flags f) {
+    public static short add16Signed8cz(short a, byte b, Flags f) {
         int va = (a & 0xffff);
         int vb = (((int)b) & 0xffff) ;
-        int va_l = (va & 0xff);
-        int vb_l = (vb & 0xff);
-        f.wh(((va_l + vb_l) & 0x100) != 0);
-        int r = va + vb;
-        f.wc((r & 0x10000) != 0);
+        int va_l = (va & 0xfff);
+        int vb_l = (vb & 0xfff);
+        f.wh(((va_l + vb_l) & 0x1000) != 0);
+        int r = (va + vb) & 0xffff;
+        f.wc(b > 0 ? r < va : r > va);
         f.clrz();
         f.clrn();
         return (short)r;
@@ -199,7 +199,7 @@ public class Bin {
     
     public static byte sra8(byte v, Flags f) {
         f.wc((v & 0x01) != 0);
-        byte r = (byte)((v & 0xff) >> 1);
+        byte r = (byte)(v >> 1);
         f.wz(r == 0);
         f.clrn();
         f.clrh();

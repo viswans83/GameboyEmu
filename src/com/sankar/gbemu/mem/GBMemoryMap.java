@@ -14,6 +14,8 @@ import com.sankar.gbemu.mem.map.MMapComposite;
 import com.sankar.gbemu.mem.map.MMapDummy;
 import com.sankar.gbemu.mem.map.MMapRange;
 import com.sankar.gbemu.mem.map.MemoryMapped;
+import com.sankar.gbemu.serial.SerialController;
+import com.sankar.gbemu.sound.SoundController;
 
 /**
  *
@@ -47,20 +49,22 @@ public class GBMemoryMap implements Memory, MemoryMapped {
     
     private MemoryMapped dummy = new MMapDummy();
     
-    public GBMemoryMap(Cartridge cart, LCDController lcd, JoypadController joy, InterruptFlag iflag, InterruptEnable ienable, Timer timer) {
+    public GBMemoryMap(Cartridge cart, LCDController lcd, JoypadController joy, SoundController sound, SerialController serial, InterruptFlag iflag, InterruptEnable ienable, Timer timer) {
         this.iflag = iflag;
         this.ienable = ienable;
         
+        mm.register(iflag);
+        mm.register(ienable);
         mm.register(cart);
         mm.register(lcd);
         mm.register(wram);
         mm.register(echo);
         mm.register(joy);
         mm.register(new DMAController(this));
-        mm.register(timer);
-        mm.register(iflag);
-        mm.register(ienable);
         mm.register(unusable);
+        mm.register(timer);
+        mm.register(sound);
+        mm.register(serial);
         mm.register(hram);
         
         //Always register this last

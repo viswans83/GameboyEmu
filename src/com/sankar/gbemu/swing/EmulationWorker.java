@@ -4,6 +4,7 @@ import com.sankar.gbemu.cpu.CPU;
 import com.sankar.gbemu.gpu.LCDController;
 import com.sankar.gbemu.gpu.VBlankListener;
 import java.util.List;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 public class EmulationWorker extends SwingWorker<Void,int[][]> {
@@ -56,6 +57,7 @@ public class EmulationWorker extends SwingWorker<Void,int[][]> {
 
     @Override
     protected void process(List<int[][]> updates) {
+        if (!SwingUtilities.isEventDispatchThread()) throw new RuntimeException("Not in event dispatch thread");
         renderer.updateScreenData(updates.get(updates.size() - 1));
         panel.repaint();
     }

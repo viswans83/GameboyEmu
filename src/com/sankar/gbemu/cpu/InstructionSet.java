@@ -435,22 +435,22 @@ public class InstructionSet {
         
         //8-Bit (LD A,(FF00 + nn))
         reg_op(new OpCode(0xf0, 2, 12, "LD A,(FF00 + %02X)") {@Override protected void execute8(CPU cpu, Memory mem, byte arg) {
-            cpu.wa(mem.r8((short)(0x0000FF00 + Bin.toInt(arg))));
+            cpu.wa(mem.r8((short)(0xFF00 + Bin.toInt(arg))));
         }});
         
         //8-Bit (LD (FF00 + nn),A)
         reg_op(new OpCode(0xe0, 2, 12, "LD (FF00 + %02X),A") {@Override protected void execute8(CPU cpu, Memory mem, byte arg) {
-            mem.w8((short)(0x0000FF00 + Bin.toInt(arg)), cpu.ra());
+            mem.w8((short)(0xFF00 + Bin.toInt(arg)), cpu.ra());
         }});
         
         //8-Bit (LD A,(FF00 + C))
         reg_op(new OpCode(0xf2, 1, 8, "LD A,(FF00 + C)") {@Override protected void execute0(CPU cpu, Memory mem) {
-            cpu.wa(mem.r8((short)(0x0000FF00 + Bin.toInt(cpu.rc()))));
+            cpu.wa(mem.r8((short)(0xFF00 + Bin.toInt(cpu.rc()))));
         }});
         
         //8-Bit (LD (FF00 + C),A)
         reg_op(new OpCode(0xe2, 1, 8, "LD (FF00 + C),A") {@Override protected void execute0(CPU cpu, Memory mem) {
-            mem.w8((short)(0x0000FF00 + Bin.toInt(cpu.rc())), cpu.ra());
+            mem.w8((short)(0xFF00 + Bin.toInt(cpu.rc())), cpu.ra());
         }});
         
         //8-Bit (LDI (HL),A)
@@ -1177,7 +1177,7 @@ public class InstructionSet {
         
         //16-Bit (ADD SP,nn)
         reg_op(new OpCode(0xe8, 2, 16, "ADD SP,%02X") {@Override protected void execute8(CPU cpu, Memory mem, byte arg) {
-            cpu.wsp(Bin.add8cz(cpu.rsp(), arg, cpu.flags()));
+            cpu.wsp(Bin.add16Signed8cz(cpu.rsp(), arg, cpu.flags()));
         }});
         
         //----------------------------------------------------------------------
@@ -1185,7 +1185,7 @@ public class InstructionSet {
         
         //16-Bit (LD HL,SP+nn)
         reg_op(new OpCode(0xf8, 2, 12, "LD HL,SP+%02X") {@Override protected void execute8(CPU cpu, Memory mem, byte arg) {
-            cpu.whl(Bin.add8cz(cpu.rsp(), arg, cpu.flags()));
+            cpu.whl(Bin.add16Signed8cz(cpu.rsp(), arg, cpu.flags()));
         }});
         
         //----------------------------------------------------------------------
@@ -2744,41 +2744,49 @@ public class InstructionSet {
         
         //(RST nn)
         reg_op(new OpCode(0xc7, 1, 0, 16, "RST 00H") {@Override protected void execute0(CPU cpu, Memory mem) {
+            cpu.push16((short)(cpu.rpc() + 1));
             cpu.wpc((short)0x0000);
         }});
         
         //(RST nn)
         reg_op(new OpCode(0xcf, 1, 0, 16, "RST 08H") {@Override protected void execute0(CPU cpu, Memory mem) {
+            cpu.push16((short)(cpu.rpc() + 1));
             cpu.wpc((short)0x0008);
         }});
         
         //(RST nn)
         reg_op(new OpCode(0xd7, 1, 0, 16, "RST 10H") {@Override protected void execute0(CPU cpu, Memory mem) {
+            cpu.push16((short)(cpu.rpc() + 1));
             cpu.wpc((short)0x0010);
         }});
         
         //(RST nn)
         reg_op(new OpCode(0xdf, 1, 0, 16, "RST 18H") {@Override protected void execute0(CPU cpu, Memory mem) {
+            cpu.push16((short)(cpu.rpc() + 1));
             cpu.wpc((short)0x0018);
         }});
         
         //(RST nn)
         reg_op(new OpCode(0xe7, 1, 0, 16, "RST 20H") {@Override protected void execute0(CPU cpu, Memory mem) {
+            cpu.push16((short)(cpu.rpc() + 1));
             cpu.wpc((short)0x0020);
         }});
         
         //(RST nn)
         reg_op(new OpCode(0xef, 1, 0, 16, "RST 28H") {@Override protected void execute0(CPU cpu, Memory mem) {
+            cpu.push16((short)(cpu.rpc() + 1));
             cpu.wpc((short)0x0028);
         }});
         
         //(RST nn)
         reg_op(new OpCode(0xf7, 1, 0, 16, "RST 30H") {@Override protected void execute0(CPU cpu, Memory mem) {
+            cpu.push16((short)(cpu.rpc() + 1));
             cpu.wpc((short)0x0030);
         }});
         
         //(RST nn)
         reg_op(new OpCode(0xff, 1, 0, 16, "RST 38H") {@Override protected void execute0(CPU cpu, Memory mem) {
+            cpu.push16((short)(cpu.rpc() + 1));
             cpu.wpc((short)0x0038);
         }});
     }

@@ -111,6 +111,11 @@ public abstract class OpCode {
         return opCode;
     }
     
+    @Override
+    public String toString() {
+        return fmt;
+    }
+    
     public String toString(CPU cpu, Memory mem) {
         switch(argType) {
             case NoArgs:

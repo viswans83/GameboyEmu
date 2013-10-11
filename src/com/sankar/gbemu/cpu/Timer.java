@@ -94,9 +94,11 @@ public class Timer implements MemoryMapped {
     private void setTimer() {
         boolean timerOn = (tac & 0x04) != 0;
         
-        if (!timerOn) return;
-        
-        switch (tac & 0x3) {
+        if (!timerOn) {
+            IntervalTrigger removedTimer = (IntervalTrigger)clock.unregister(T_TIMA);
+            // Initially there will be no registered timer
+            if(removedTimer != null) removedTimer.reset();
+        } else switch (tac & 0x3) {
             case 0: clock.register(T_TIMA, T_00); break;
             case 1: clock.register(T_TIMA, T_01); break;
             case 2: clock.register(T_TIMA, T_02); break;

@@ -19,6 +19,10 @@ public class IntervalTrigger implements ClockTrigger {
         this.action = action;
     }
     
+    public void reset() {
+        ticks = 0;
+    }
+    
     public long unusedTicks() {
         return ticks;
     }
