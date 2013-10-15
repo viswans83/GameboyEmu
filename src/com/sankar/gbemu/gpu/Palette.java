@@ -16,8 +16,8 @@ public class Palette {
         this.value = value;
     }
     
-    public int getColor(int i) {
-        return ((value & (0x03 << (i*2))) >> (i*2));
+    public int getColor(int colorNumber) {
+        return ((value & (0x03 << (colorNumber * 2))) >> (colorNumber * 2));
     }
     
 }

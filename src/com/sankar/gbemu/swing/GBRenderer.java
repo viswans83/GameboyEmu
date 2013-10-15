@@ -22,7 +22,7 @@ public class GBRenderer {
     private final Color[] colors = new Color[4];
     
     public GBRenderer() {
-        colors[0] = new Color(0x01ffa5);
+        colors[0] = new Color(0xd7ffcb);
         colors[1] = new Color(0xccb072);
         colors[2] = new Color(0x006642);
         colors[3] = new Color(0x051c12);

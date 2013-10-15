@@ -7,6 +7,7 @@ package com.sankar.gbemu.gpu;
 import com.sankar.gbemu.clock.Clock;
 import com.sankar.gbemu.clock.ClockTrigger;
 import com.sankar.gbemu.cpu.Interrupt;
+import com.sankar.gbemu.gpu.Sprite.TileLocation;
 import com.sankar.gbemu.mem.InterruptFlag;
 import com.sankar.gbemu.mem.map.ByteRef;
 import com.sankar.gbemu.mem.map.MMapByteRef;
@@ -15,6 +16,8 @@ import com.sankar.gbemu.mem.map.MMapRange;
 import com.sankar.gbemu.mem.map.MemoryMapped;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  *
@@ -168,10 +171,70 @@ public class LCDController implements MemoryMapped, ClockTrigger {
         short tileDataAddr = lcdc.getTileDataAddr();
         
         Palette bgPalette = new Palette(bgp);
+        Palette obp0Palette = new Palette(obp0);
+        Palette obp1Palette = new Palette(obp1);
         Background bg = createBackground(bgTileMapAddr,tileDataAddr);
+        Collection<Sprite> sprites = createSprites();
         
-        for(int x = 0; x < 160; x++)
-            lcdFBData[x][ly & 0xff] = bgPalette.getColor(bg.getColorNumber((byte)((scx & 0xff) + x), (byte)((scy & 0xff) + (ly & 0xff))));
+        boolean largeSprites = lcdc.largeSprites();
+        for(int x = 0; x < 160; x++) {
+            int bgColor = bg.getColorNumber((byte)((scx & 0xff) + x), (byte)((scy & 0xff) + (ly & 0xff)));
+            int spriteColor = 0;
+            int pixelColor;
+            
+            boolean spriteFound = false;
+            boolean spriteOverrides = false;
+            Palette spritePalette = null;
+            for(Sprite sp : sprites) {
+                if (sp.isPointInsideSprite(x, ly & 0xff, largeSprites)) {
+                    spriteFound = true;
+                    spriteOverrides = sp.isAboveBackground();
+                    TileLocation tl = sp.getTileLocation(x, ly & 0xff, largeSprites);
+                    Tile tile = createSpriteTile(tl.tile);
+                    spritePalette = sp.getPaletteNumber() == 0 ? obp0Palette : obp1Palette;
+                    spriteColor = tile.colorNumber(tl.x, tl.y);
+                    break;
+                }
+            }
+            
+            if (spriteFound && (bgColor == 0 || (spriteOverrides && spriteColor != 0))) { 
+                pixelColor = spritePalette.getColor(spriteColor);
+            } else {
+                pixelColor = bgPalette.getColor(bgColor);
+            }
+            
+            lcdFBData[x][ly & 0xff] = pixelColor;
+        }
+        
+    }
+    
+    private Tile createSpriteTile(int tileNum) {
+        int base = 0x8000 + (tileNum * 16);
+        byte[] tileBytes = new byte[16];
+        
+        for(int i = 0; i < 16; i++) 
+            tileBytes[i] = vram.r8((short)(base + i));
+        
+        return new Tile(tileBytes);
+    }
+    
+    private Collection<Sprite> createSprites() {
+        List<Sprite> sprites = new ArrayList<Sprite>();
+        
+        for(int cnt = 0; cnt < 40; cnt++) {
+            byte[] spriteData = new byte[4];
+
+            int base = 0xfe00 + (cnt * 4);
+            for(int i = 0; i < 4; i++) 
+                spriteData[i] = oam.r8((short)(base + i));
+            
+            Sprite s = new Sprite(cnt,spriteData);
+            sprites.add(s);
+        }
+        
+        Collections.sort(sprites,Sprite.drawOrder);
+        
+        return sprites;
     }
     
     private Background createBackground(short bgTileMapAddr, short tileDataAddr) {

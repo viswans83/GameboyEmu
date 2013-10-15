@@ -4,8 +4,6 @@
  */
 package com.sankar.gbemu.joy;
 
-import com.sankar.gbemu.clock.Clock;
-import com.sankar.gbemu.clock.ClockTrigger;
 import com.sankar.gbemu.cpu.Interrupt;
 import com.sankar.gbemu.mem.InterruptFlag;
 import com.sankar.gbemu.mem.map.MemoryMapped;

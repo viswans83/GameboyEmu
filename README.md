@@ -1,19 +1,32 @@
 # GBEmulator
 
-A Gameboy emulator in Java with Swing (incomplete and barely tested)
+A Gameboy emulator in Java with the GUI in Swing
 
 ## What has been implemented
 * CPU Emulation
 * MBC1, ROM and ROM+RAM cartridge
 * Background
+* Sprites
 * Interrupts
-* Instruction Timing and Timers
+* Instruction Timing
+* Timer and Divider
+* DMA transfer
+* Joypad
 
 ## What is not yet complete
-* Window and Sprites
-* Joypad input
+* Window
+* LCD, Window, Sprites enable / disable
 * Serial communication
 * Sound
 * Extensive testing
+
+## Screenshots
+![Tic-Tac-Toe](https://github.com/rationalrevolt/GameboyEmu/screenshots/ttt.png)&nbsp;
+![Opus5 gameplay from Imran Nazar's page](https://github.com/rationalrevolt/GameboyEmu/screenshots/opus5.png)&nbsp;
+![Dr.Mario game menu](https://github.com/rationalrevolt/GameboyEmu/screenshots/mario1.png)&nbsp;
+![Dr.Mario gameplay](https://github.com/rationalrevolt/GameboyEmu/screenshots/mario2.png)&nbsp;
+
+## Usage
+`java -jar GameboyEmu.jar romfile`
 
 Copyright © 2013 Sankaranarayanan Viswanathan
