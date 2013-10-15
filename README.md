@@ -21,10 +21,10 @@ A Gameboy emulator in Java with the GUI in Swing
 * Extensive testing
 
 ## Screenshots
-![Tic-Tac-Toe](https://github.com/rationalrevolt/GameboyEmu/blob/master/screenshots/ttt.png)&nbsp;
-![Opus5 gameplay from Imran Nazar's page](https://github.com/rationalrevolt/GameboyEmu/blob/master/screenshots/opus5.png)&nbsp;
-![Dr.Mario game menu](https://github.com/rationalrevolt/GameboyEmu/blob/master/screenshots/mario1.png)&nbsp;
-![Dr.Mario gameplay](https://github.com/rationalrevolt/GameboyEmu/blob/master/screenshots/mario2.png)&nbsp;
+![Tic-Tac-Toe](https://github.com/rationalrevolt/GameboyEmu/raw/master/screenshots/ttt.png)&nbsp;
+![Opus5 gameplay from Imran Nazar's page](https://github.com/rationalrevolt/GameboyEmu/raw/master/screenshots/opus5.png)&nbsp;
+![Dr.Mario game menu](https://github.com/rationalrevolt/GameboyEmu/raw/master/screenshots/mario1.png)&nbsp;
+![Dr.Mario gameplay](https://github.com/rationalrevolt/GameboyEmu/raw/master/screenshots/mario2.png)&nbsp;
 
 ## Usage
 `java -jar GameboyEmu.jar romfile`
