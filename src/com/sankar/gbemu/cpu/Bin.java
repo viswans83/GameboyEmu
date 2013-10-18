@@ -120,7 +120,7 @@ public class Bin {
     
     public static byte inc8(byte v, Flags f) {
         f.wh((v & 0x0f) == 0x0f);
-        f.wz(v == 0xff);
+        f.wz((v & 0xff) == 0xff);
         f.clrn();
         return (byte)(v + 1);
     }
@@ -244,7 +244,7 @@ public class Bin {
     }
     
     public static byte highByte(short val) {
-        return (byte)((val >> 8) & 0xff);
+        return (byte)((val & 0xff00) >> 8);
     }
     
     public static byte lowByte(short val) {
@@ -252,11 +252,11 @@ public class Bin {
     }
     
     public static int toInt(byte b) {
-        return b & 0x000000FF;
+        return b & 0xff;
     }
     
     public static int toInt(short s) {
-        return s & 0x0000FFFF;
+        return s & 0xffff;
     }
     
 }
