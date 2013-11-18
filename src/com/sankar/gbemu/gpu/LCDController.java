@@ -197,7 +197,7 @@ public class LCDController implements MemoryMapped, ClockTrigger {
                 }
             }
             
-            if (spriteFound && (bgColor == 0 || (spriteOverrides && spriteColor != 0))) { 
+            if (spriteFound && spriteColor != 0 && (bgColor == 0 || spriteOverrides)) { 
                 pixelColor = spritePalette.getColor(spriteColor);
             } else {
                 pixelColor = bgPalette.getColor(bgColor);

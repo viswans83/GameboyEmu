@@ -26,8 +26,8 @@ public class Background {
         int ix = x & 0xff;
         int iy = y & 0xff;
         
-        int tileNum = tileMapData[((int)(iy/8))*32 + (int)(ix/8)];
-        if (signedTileNumbers) tileNum += 128;
+        byte bTileNum = tileMapData[((int)(iy/8))*32 + (int)(ix/8)];
+        int tileNum = signedTileNumbers ? ((int)bTileNum + 128) : (bTileNum & 0xff);
         
         Tile tile = getTile(tileNum);
         

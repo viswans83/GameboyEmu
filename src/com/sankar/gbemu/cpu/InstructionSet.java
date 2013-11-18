@@ -500,10 +500,16 @@ public class InstructionSet {
             cpu.wsp(arg);
         }});
         
+        //16-Bit (LD (nnnn),SP)
+        reg_op(new OpCode(0x08, 3, 20, "LD (%04X),SP") {@Override protected void execute16(CPU cpu, Memory mem, short arg) {
+            mem.w16(arg,cpu.rsp());
+        }});
+        
         //16-Bit (LD SP,HL)
         reg_op(new OpCode(0xf9, 1, 8, "LD SP,HL") {@Override protected void execute0(CPU cpu, Memory mem) {
             cpu.wsp(cpu.rhl());
         }});
+        
         
         //----------------------------------------------------------------------
         //----------------------------------------------------------------------
@@ -1060,37 +1066,40 @@ public class InstructionSet {
             boolean c = cpu.flags().rc();
             boolean h = cpu.flags().rh();
             
-            byte u = (byte)((cpu.ra() >>> 4) & 0x00FF);
-            byte l = (byte)(cpu.ra() & 0x00FF);
+            int u = ((cpu.ra() & 0xf0) >> 4);
+            int l = (cpu.ra() & 0x0f);
             
             byte _add = 0;
             boolean _c = false;
             
             if(!n) {
                 if(!c) {
-                    if (u == 0x90 && !h && l == 0x09) {_add =  0; _c = false;}
-                    if (u == 0x08 && !h && l == 0xaf) {_add =  6; _c = false;}
-                    if (u == 0x09 &&  h && l == 0x03) {_add =  6; _c = false;}
-                    if (u == 0xaf && !h && l == 0x09) {_add = 0x60; _c = true;}
-                    if (u == 0x9f && !h && l == 0xaf) {_add = 0x66; _c = true;}
-                    if (u == 0xaf &&  h && l == 0x03) {_add = 0x66; _c = true;}
+                         if (u >= 0x9 && u <= 0xf && !h && l >= 0x0 && l <= 0x9) {_add = 0x00; _c = false;}
+                    else if (u == 0x0 &&             !h && l >= 0x0 && l <= 0x9) {_add = 0x00; _c = false;}
+                    else if (u >= 0x0 && u <= 0x8 && !h && l >= 0xa && l <= 0xf) {_add = 0x06; _c = false;}
+                    else if (u >= 0x0 && u <= 0x9 &&  h && l >= 0x0 && l <= 0x3) {_add = 0x06; _c = false;}
+                    else if (u >= 0xa && u <= 0xf && !h && l >= 0x0 && l <= 0x9) {_add = 0x60; _c = true;}
+                    else if (u >= 0x9 && u <= 0xf && !h && l >= 0xa && l <= 0xf) {_add = 0x66; _c = true;}
+                    else if (u >= 0xa && u <= 0xf &&  h && l >= 0x0 && l <= 0x3) {_add = 0x66; _c = true;}
                 } else {
-                    if (u == 0x02 && !h && l == 0x09) {_add = 0x60; _c = true;}
-                    if (u == 0x02 && !h && l == 0xaf) {_add = 0x66; _c = true;}
-                    if (u == 0x03 &&  h && l == 0x03) {_add = 0x66; _c = true;}
+                         if (u >= 0x0 && u <= 0x2 && !h && l >= 0x0 && l <= 0x9) {_add = 0x60; _c = true;}
+                    else if (u >= 0x0 && u <= 0x2 && !h && l >= 0xa && l <= 0xf) {_add = 0x66; _c = true;}
+                    else if (u >= 0x0 && u <= 0x3 &&  h && l >= 0x0 && l <= 0x3) {_add = 0x66; _c = true;}
                 }
             } else {
                 if(!c) {
-                    if (u == 0x09 && !h && l == 0x09) {_add = 00; _c = false;}
-                    if (u == 0x08 &&  h && l == 0x6f) {_add = (byte)0xfa; _c = false;}
+                         if (u >= 0x0 && u <= 0x9 && !h && l >= 0x0 && l <= 0x9) {_add = 00;         _c = false;}
+                    else if (u >= 0x0 && u <= 0x8 &&  h && l >= 0x6 && l <= 0xf) {_add = (byte)0xfa; _c = false;}
                 } else {
-                    if (u == 0x7f && !h && l == 0x09) {_add = (byte)0xa0; _c = true;}
-                    if (u == 0x67 &&  h && l == 0x6f) {_add = (byte)0x9a; _c = true;}
+                         if (u >= 0x7 && u <= 0xf && !h && l >= 0x0 && l <= 0x9) {_add = (byte)0xa0; _c = true;}
+                    else if (u >= 0x6 && u <= 0x7 &&  h && l >= 0x6 && l <= 0xf) {_add = (byte)0x9a; _c = true;}
                 }
             }
             
-            cpu.wa((byte)(Bin.toInt(cpu.ra()) + Bin.toInt(_add)));
+            byte result = (byte)(cpu.ra() + _add);
+            cpu.wa(result);
             cpu.flags().wc(_c);
+            cpu.flags().wz(result == 0);
         }});
         
         //----------------------------------------------------------------------

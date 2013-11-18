@@ -4,6 +4,7 @@ import com.sankar.gbemu.cpu.CPU;
 import com.sankar.gbemu.gpu.LCDController;
 import com.sankar.gbemu.gpu.VBlankListener;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
@@ -31,8 +32,6 @@ public class EmulationWorker extends SwingWorker<Void,int[][]> {
             
             @Override
             public void vBlankOccured(int[][] screenData) {
-                publish(screenData);
-                
                 long currentTime = System.nanoTime();
                 long delta = currentTime - lastRefresh;
                 
@@ -46,6 +45,8 @@ public class EmulationWorker extends SwingWorker<Void,int[][]> {
                         // Ignore
                     }
                 }
+                
+                publish(screenData);
             }
         });
     }
@@ -59,7 +60,19 @@ public class EmulationWorker extends SwingWorker<Void,int[][]> {
     protected void process(List<int[][]> updates) {
         if (!SwingUtilities.isEventDispatchThread()) throw new RuntimeException("Not in event dispatch thread");
         renderer.updateScreenData(updates.get(updates.size() - 1));
-        panel.repaint();
+        panel.repaint(panel.getBounds());
+    }
+    
+    @Override
+    protected void done() {
+        try {
+            get();
+        } catch(InterruptedException t) {
+            // Ignore
+        } catch (ExecutionException t) {
+            t.printStackTrace();
+            System.exit(-1);
+        }
     }
 
 }

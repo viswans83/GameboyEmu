@@ -78,7 +78,9 @@ public class GBMemoryMap implements Memory, MemoryMapped {
 
     @Override
     public short r16(short addr) {
-        return Bin.make16(mm.r8((short)(addr + 1)),mm.r8(addr));
+        byte lowByte = mm.r8(addr);
+        byte highByte = mm.r8((short)(addr + 1));
+        return Bin.make16(highByte,lowByte);
     }
 
     @Override

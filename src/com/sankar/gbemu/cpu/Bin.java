@@ -240,7 +240,7 @@ public class Bin {
     }
     
     public static short make16(byte a, byte b) {
-        return (short)((a & 0xff) << 8 | (b & 0xff));
+        return (short)(((a & 0xff) << 8) | (b & 0xff));
     }
     
     public static byte highByte(short val) {

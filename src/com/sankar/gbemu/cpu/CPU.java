@@ -126,7 +126,7 @@ public class CPU {
     
     //8-Bit writes
     public void wa(byte val) { reg_a = val; }
-    public void wf(byte val) { reg_f = val; }
+    public void wf(byte val) { reg_f = (byte)(val & 0xf0); }
     public void wb(byte val) { reg_b = val; }
     public void wc(byte val) { reg_c = val; }
     public void wd(byte val) { reg_d = val; }
@@ -141,10 +141,10 @@ public class CPU {
     public short rhl() { return Bin.make16(reg_h,reg_l); }
     
     //16-Bit writes
-    public void waf(short val) { reg_a = (byte)(val>>>8); reg_f = (byte)(val & 0x00ff); }
-    public void wbc(short val) { reg_b = (byte)(val>>>8); reg_c = (byte)(val & 0x00ff); }
-    public void wde(short val) { reg_d = (byte)(val>>>8); reg_e = (byte)(val & 0x00ff); }
-    public void whl(short val) { reg_h = (byte)(val>>>8); reg_l = (byte)(val & 0x00ff); }
+    public void waf(short val) { reg_a = (byte)((val & 0xff00) >> 8); reg_f = (byte)(val & 0x00f0); }
+    public void wbc(short val) { reg_b = (byte)((val & 0xff00) >> 8); reg_c = (byte)(val & 0x00ff); }
+    public void wde(short val) { reg_d = (byte)((val & 0xff00) >> 8); reg_e = (byte)(val & 0x00ff); }
+    public void whl(short val) { reg_h = (byte)((val & 0xff00) >> 8); reg_l = (byte)(val & 0x00ff); }
     
     void setIME(boolean val) {
         ime = val;
